@@ -612,5 +612,26 @@ install_sw:
         cp openssl.pc $(INSTALL_PREFIX)$(INSTALLTOP)/$(LIBDIR)/pkgconfig
         chmod 644 $(INSTALL_PREFIX)$(INSTALLTOP)/$(LIBDIR)/pkgconfig/openssl.pc
 
+install_html_docs:
+        here="`pwd`"; \
+        for subdir in apps crypto ssl; do \
+                mkdir -p $(INSTALL_PREFIX)$(HTMLDIR)/$$subdir; \
+                for i in doc/$$subdir/*.pod; do \
+                        fn=`basename $$i .pod`; \
+                        echo "installing html/$$fn.$(HTMLSUFFIX)"; \
+                        cat $$i \
+                        | sed -r 's/L<([^)]*)(\([0-9]\))?\|([^)]*)(\([0-9]\))?>/L<\1|\3>/g' \
+                        | pod2html --podroot=doc --htmlroot=.. --podpath=apps:crypto:ssl \
+                        | sed -r 's/<!DOCTYPE.*//g' \
+                        > $(INSTALL_PREFIX)$(HTMLDIR)/$$subdir/$$fn.$(HTMLSUFFIX); \
+                        $(PERL) util/extract-names.pl < $$i | \
+                                grep -v $$filecase "^$$fn\$$" | \
+                                (cd $(INSTALL_PREFIX)$(HTMLDIR)/$$subdir; \
+                                 while read n; do \
+                                        PLATFORM=$(PLATFORM) $$here/util/point.sh $$fn.$(HTMLSUFFIX) "$$n".$(HTMLSUFFIX); \
+                                 done); \
+                done; \
+        done
+
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
