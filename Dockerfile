@@ -1,5 +1,5 @@
 FROM ubuntu:18.04
-COPY . /
+COPY . /tmp/
 RUN apt update
 RUN apt install wget -y
 RUN alias wget='wget --no-check-certificate'
