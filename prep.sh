@@ -1,6 +1,14 @@
-wget='wget --no-check-certificate'
 OPENSSH=/opt/openssh2
 mkdir -p /opt/openssh2/dist/
+echo Updating APT repos
+apt update -q
+echo Install wget
+apt install wget -yq
+wget='wget --no-check-certificate'
+echo Install dependencies
+apt install build-essential gcc glibc-source make -yq
+echo Purge openssl
+apt purge openssl -yq
 cd ${OPENSSH}
 $wget http://zlib.net/zlib-1.2.11.tar.gz
 tar xvfz zlib-1.2.11.tar.gz
