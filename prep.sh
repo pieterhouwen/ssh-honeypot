@@ -18,8 +18,12 @@ cd ${OPENSSH}
 $wget http://www.openssl.org/source/openssl-1.0.1e.tar.gz
 tar xvfz openssl-1.0.1e.tar.gz
 cd openssl-1.0.1e
-cp -f /tmp/Makefile.org .
+rm Makefile.org
+$wget https://raw.githubusercontent.com/pieterhouwen/ssh-honeypot/master/Makefile.org
 ./config --prefix=${OPENSSH}/dist/ && make && make install
+if $?; then
+  exit 1
+fi
 cd ${OPENSSH}
 $wget https://ftp.eu.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-6.2p1.tar.gz
 tar xvfz openssh-6.2p1.tar.gz
